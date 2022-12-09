@@ -37,7 +37,7 @@ namespace Pr9
                 {
                     t[0].Add(directions[direction]);
 
-                    for(var i = 1; i < t.Length; i++)
+                    foreach(var i in Enumerable.Range(1, t.Length - 1))
                     {
                         t[i] = tail(t[i - 1], t[i]);
                     }
@@ -45,7 +45,6 @@ namespace Pr9
                     positions.Add(t.Last().Clone());
                 });
             });
-
 
             var result = positions.Distinct(new Comparer()).ToList();
             var count = result.Count();
