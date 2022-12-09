@@ -34,7 +34,6 @@ namespace Pr1
                 index++;
             });
             Console.WriteLine($"MAX {max} index {indexOfMax}");
-
             Console.WriteLine(all.OrderByDescending(x => x).Take(3).Sum());
             Console.ReadLine();
         }
