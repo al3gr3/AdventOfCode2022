@@ -64,6 +64,7 @@ namespace Pr11
 
         private static void secondStar(Dictionary<char, Point> directions, string[] lines, Point[][] prev, int[][] dist, List<Point> queue)
         {
+            var result = 100000000;
             dist[20][58] = 0;
             while (queue.Any())
             {
@@ -89,21 +90,14 @@ namespace Pr11
                         {
                             dist[v.Y][v.X] = alt;
                             prev[v.Y][v.X] = v.Clone();
+
+                            if (lines[v.Y][v.X] == 'a')
+                                result = Math.Min(result, dist[v.Y][v.X]);
                         }
                     }
                 });
             }
 
-            var result = 100000000;
-            var height = lines.Length;
-            var width = lines.First().Length;
-            for(var y = 0; y < height; y++)
-                for(var x = 0; x < width; x++)
-                    if (lines[y][x] == 'a')
-                    {
-                        result = Math.Min(result, dist[y][x]);
-                    }
-            
             Console.WriteLine(result);
         }
 
