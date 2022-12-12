@@ -10,32 +10,79 @@ namespace Pr1
         static void Main(string[] args)
         {
             var lines = File.ReadAllLines("TextFile1.txt");
-            var current = 0;
-            var max = 0;
-            var index = 0;
-            var indexOfMax = 0;
-            var all = new List<int>();
-            lines.ToList().ForEach(line =>
+            var s = "";
+            var spritePos = 1;
+            var caret = 0;
+            foreach (var line in lines)
             {
-                if (!string.IsNullOrEmpty(line))
+                var words = line.Split(' ');
+                if (words.First() == "addx")
                 {
-                    current += int.Parse(line);
+                    write(ref s, spritePos, ref caret);
+
+                    write(ref s, spritePos, ref caret);
+
+                    var amount = int.Parse(words.Last());
+                    spritePos += amount;
                 }
-                else
+                else if (words.First() == "noop")
                 {
-                    all.Add(current);
-                    if (max < current)
-                    {
-                        max = current;
-                        indexOfMax = index;
-                    }
-                    current = 0;
+                    write(ref s, spritePos, ref caret);
                 }
-                index++;
-            });
-            Console.WriteLine($"MAX {max} index {indexOfMax}");
-            Console.WriteLine(all.OrderByDescending(x => x).Take(3).Sum());
+            }
+
+            Console.WriteLine(s);
+        }
+
+        private static void write(ref string s, int spritePos, ref int caret)
+        {
+            s += Math.Abs(caret - spritePos) <= 1 ? "#" : ".";
+            caret++;
+            if (caret == 40)
+            {
+                caret = 0;
+                s += Environment.NewLine;
+            }
+        }
+
+        private static void First(string[] lines)
+        {
+            var sum = 1;
+            var cpus = 0;
+            var result = 0;
+            foreach (var line in lines)
+            {
+                var words = line.Split(' ');
+                if (words.First() == "addx")
+                {
+                    cpus++;
+                    result += Check(sum, cpus);
+                    cpus++;
+                    result += Check(sum, cpus);
+
+                    var amount = int.Parse(words.Last());
+
+                    sum += amount;
+                }
+                else if (words.First() == "noop")
+                {
+                    cpus++;
+                    result += Check(sum, cpus);
+                }
+            }
+            Console.WriteLine(result);
+
             Console.ReadLine();
+        }
+
+        private static int Check(int sum, int cpus)
+        {
+            if (new[] { 20, 60, 100, 140, 180, 220, 260 }.Any(x => x == cpus))
+            {
+                return sum * cpus;
+            }
+
+            return 0;
         }
     }
 }
