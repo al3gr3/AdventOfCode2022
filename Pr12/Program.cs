@@ -26,6 +26,7 @@ namespace Pr11
             var queue = Enumerable.Range(0, height).SelectMany(y => Enumerable.Range(0, width).Select(x => new Point { X = x, Y = y })).ToList();
 
             secondStar(directions, lines, prev, dist, queue);
+            //firstStar(directions, lines, prev, dist, queue);
         }
 
         private static void firstStar(Dictionary<char, Point> directions, string[] lines, Point[][] prev, int[][] dist, List<Point> queue)
@@ -33,7 +34,7 @@ namespace Pr11
             dist[20][0] = 0;
             while (queue.Any())
             {
-                var u = queue.OrderBy(x => dist[x.Y][x.X]).First();
+                var u = queue.Aggregate(queue.First(), (min, n) => dist[min.Y][min.X] > dist[n.Y][n.X] ? n : min);
                 queue.Remove(u);
 
                 directions.Keys.ToList().ForEach(direction =>
@@ -54,7 +55,7 @@ namespace Pr11
                         if (alt < dist[v.Y][v.X])
                         {
                             dist[v.Y][v.X] = alt;
-                            prev[v.Y][v.X] = v.Clone();
+                            prev[v.Y][v.X] = u.Clone();
                         }
                     }
                 });
@@ -68,7 +69,7 @@ namespace Pr11
             dist[20][58] = 0;
             while (queue.Any())
             {
-                var u = queue.OrderBy(x => dist[x.Y][x.X]).First();
+                var u = queue.Aggregate(queue.First(), (min, n) => dist[min.Y][min.X] > dist[n.Y][n.X] ? n : min);
                 queue.Remove(u);
 
                 directions.Keys.ToList().ForEach(direction =>
@@ -89,7 +90,7 @@ namespace Pr11
                         if (alt < dist[v.Y][v.X])
                         {
                             dist[v.Y][v.X] = alt;
-                            prev[v.Y][v.X] = v.Clone();
+                            prev[v.Y][v.X] = u.Clone();
 
                             if (lines[v.Y][v.X] == 'a')
                                 result = Math.Min(result, dist[v.Y][v.X]);
