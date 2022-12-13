@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -8,32 +7,26 @@ namespace Pr13
 {
     class Program
     {
+        private const string MARKER_2 = "[[2]]";
+        private const string MARKER_6 = "[[6]]";
+
         static void Main(string[] args)
         {
             var lines = File.ReadAllLines("TextFile1.txt");
 
-            //firstStar(lines);
+            firstStar(lines);
             secondStar(lines.Where(x => !string.IsNullOrEmpty(x)).ToList());
         }
 
         private static void secondStar(List<string> list)
         {
-            list.Add("[[2]]");
-            list.Add("[[6]]");
+            list.Add(MARKER_2);
+            list.Add(MARKER_6);
 
+            list.Sort((x, y) => compare(parse(x), parse(y))); // todo: redundant parsing
 
-            list.Sort(new Comparer());
-
-            var result = (list.IndexOf("[[2]]") + 1) * (list.IndexOf("[[6]]") + 1);
+            var result = (list.IndexOf(MARKER_2) + 1) * (list.IndexOf(MARKER_6) + 1);
             Console.WriteLine(result);
-        }
-
-        class Comparer : IComparer<string>
-        {
-            public int Compare([AllowNull] string x, [AllowNull] string y)
-            {
-                return compare(parse(x), parse(y));
-            }
         }
 
         private static void firstStar(string[] lines)
