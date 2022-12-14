@@ -57,17 +57,14 @@ namespace Pr13
                 for (var i = 0; i < (left as Lyst).Items.Count(); i++)
                 {
                     if (i > (right as Lyst).Items.Count() - 1)
-                    {
                         return 1;
-                    }
+
                     var result = compare((left as Lyst).Items[i], (right as Lyst).Items[i]);
                     if (result != 0)
                         return result;
                 }
 
-                return (left as Lyst).Items.Count() < (right as Lyst).Items.Count()
-                    ? -1
-                    : 0;
+                return (left as Lyst).Items.Count() - (right as Lyst).Items.Count();
             }
             else if (left is Lyst && right is Ynteger)
                 return compare(left, new Lyst { Items = new List<Item> { right } });
@@ -83,7 +80,7 @@ namespace Pr13
                 return null;
             if (v.StartsWith("["))
             {
-                v = v.Substring(1, v.Length - 2);
+                v = v[1..^1];
 
                 var correctSplits = new List<string>();
 
