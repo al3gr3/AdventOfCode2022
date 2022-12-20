@@ -99,8 +99,7 @@ namespace Pr15
                             nextDay.WorkRobots(); // before buying robots
                             nextDay.Buy(price);
 
-                            //if (!dayStates[days + 1].Any() || dayStates[days + 1].Any(x => isSlightlyWorse(x, nextDay))) // cannot really remove all that is worse
-                                dayStates[days + 1].Add(nextDay); // should remove all that are really worse (like -1)
+                            dayStates[days + 1].Add(nextDay);
                         }
                     });
 
@@ -116,9 +115,6 @@ namespace Pr15
 
         private static void fixStates(List<DayState> dayStates)
         {
-            //if (dayStates.Any(x => x.RobotObsidian > 0))
-            //    dayStates.RemoveAll(x => x.RobotObsidian == 0);
-            
             if (dayStates.Any(x => x.RobotGeode > 0))
                 dayStates.RemoveAll(x => x.RobotGeode == 0);
             else
