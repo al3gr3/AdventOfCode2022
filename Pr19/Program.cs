@@ -99,8 +99,8 @@ namespace Pr15
 
         private static void fixStates(List<DayState> dayStates)
         {
-            if (dayStates.Any(x => x.RobotObsidian > 0))
-                dayStates.RemoveAll(x => x.RobotObsidian == 0);
+            //if (dayStates.Any(x => x.RobotObsidian > 0))
+            //    dayStates.RemoveAll(x => x.RobotObsidian == 0);
             
             if (dayStates.Any(x => x.RobotGeode > 0))
                 dayStates.RemoveAll(x => x.RobotGeode == 0);
