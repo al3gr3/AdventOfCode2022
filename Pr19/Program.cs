@@ -46,7 +46,7 @@ namespace Pr15
                             Obsidian = int.Parse(splits[16]),
                             Item = ItemEnum.Geode,
                         }
-                    },
+                    }.OrderByDescending(x => x.Item).ToArray(),
                 };
             }).ToList();
 
@@ -61,63 +61,69 @@ namespace Pr15
 
         private static void letsgo(BluePrint blueprint)
         {
-            var dayStates = Enumerable.Range(1, 26).Select(x => new List<DayState>()).ToArray();
+            var maxDays = 24;
+            var dayStates = Enumerable.Range(1, maxDays + 2).Select(x => new List<DayState>()).ToArray();
             dayStates[1].Add(new DayState
             {
                 RobotOre = 1
             });
-            for (var days = 1; days <= 24; days++)
+
+            for (var days = 1; days <= maxDays; days++)
             {
+                fixStates(dayStates[days]);
                 dayStates[days].ForEach(daystate =>
                 {
-                    var nextDay = new DayState
-                    {
-                        Clay = daystate.Clay + daystate.RobotClay,
-                        Ore = daystate.Ore + daystate.RobotOre,
-                        Obsidian = daystate.Obsidian + daystate.RobotObsidian,
-                        RobotClay = daystate.RobotClay,
-                        RobotOre = daystate.RobotOre,
-                        RobotObsidian = daystate.RobotObsidian,
-                        RobotGeode = daystate.RobotGeode,
-                    };
-
-                    // not buying anything
-                    dayStates[days + 1].Add(nextDay.Clone());
-
                     // what can we buy?
                     blueprint.Prices.ToList().ForEach(price =>
                     {
-                        if (price.Ore <= nextDay.Ore && price.Clay <= nextDay.Clay && price.Obsidian <= nextDay.Obsidian)
+                        var nextDay = daystate.Clone();
+                        if (nextDay.CanBuy(price))
                         {
-                            var newState = new DayState
-                            {
-                                Clay = nextDay.Clay - price.Clay,
-                                Obsidian = nextDay.Obsidian - price.Obsidian,
-                                Ore = nextDay.Ore - price.Ore,
-                                Geode = nextDay.Geode,
-                                RobotClay = nextDay.RobotClay + (price.Item == ItemEnum.Clay ? 1 : 0),
-                                RobotOre = nextDay.RobotOre + (price.Item == ItemEnum.Ore ? 1 : 0),
-                                RobotObsidian = nextDay.RobotObsidian + (price.Item == ItemEnum.Obsidian ? 1 : 0),
-                                RobotGeode = nextDay.RobotGeode + (price.Item == ItemEnum.Geode ? 1 : 0),
-                            };
-                            if (dayStates[days + 1].Any(x => isWorse(x, newState))) // cannot really remove all that is worse
-                                dayStates[days + 1].Add(newState); // should remove all that are really worse (like -1)
+                            nextDay.WorkRobots(); // before buying robots
+                            nextDay.Buy(price);
+
+                            //if (!dayStates[days + 1].Any() || dayStates[days + 1].Any(x => isSlightlyWorse(x, nextDay))) // cannot really remove all that is worse
+                                dayStates[days + 1].Add(nextDay); // should remove all that are really worse (like -1)
                         }
                     });
 
+                    // not buying anything
+                    var nextDay = daystate.Clone();
+                    nextDay.WorkRobots();
+                    dayStates[days + 1].Add(nextDay);
                 });
             }
-            blueprint.Max = dayStates[24].Max(x => x.RobotGeode);
+            blueprint.Max = dayStates[maxDays + 1].Max(x => x.Geode);
+            Console.WriteLine(blueprint.Max);
+        }
+
+        private static void fixStates(List<DayState> dayStates)
+        {
+            if (dayStates.Any(x => x.RobotObsidian > 0))
+                dayStates.RemoveAll(x => x.RobotObsidian == 0);
+            
+            if (dayStates.Any(x => x.RobotGeode > 0))
+                dayStates.RemoveAll(x => x.RobotGeode == 0);
+            else
+                dayStates.RemoveAll(x => dayStates.Any(y =>
+                    y != x &&
+                    x.Ore <= y.Ore && 
+                    x.Clay <= y.Clay && 
+                    x.Obsidian <= y.Obsidian && 
+                    x.Geode <= y.Geode && 
+                    x.RobotOre <= y.RobotOre && 
+                    x.RobotClay <= y.RobotClay && 
+                    x.RobotGeode <= y.RobotGeode &&
+                    x.RobotObsidian <= y.RobotObsidian));
         }
 
         /// <summary>
-        /// Y < X
+        /// x < y
         /// </summary>
-        private static bool isWorse(DayState y, DayState x)
+        private static bool isSlightlyWorse(DayState x, DayState y)
         {
-            return y.Obsidian < x.Obsidian || y.Ore < x.Ore || y.Geode < x.Geode || y.Clay < x.Clay ||
-                y.RobotClay < x.RobotClay || y.RobotGeode < x.RobotGeode || y.RobotObsidian < x.RobotObsidian || y.RobotOre < x.RobotOre;
-
+            return x.Obsidian < y.Obsidian || x.Ore < y.Ore || x.Clay < y.Clay ||
+                x.RobotClay < y.RobotClay || x.RobotGeode < y.RobotGeode || x.RobotObsidian < y.RobotObsidian || x.RobotOre < y.RobotOre;
         }
     }
 
@@ -133,19 +139,38 @@ namespace Pr15
         internal int RobotObsidian;
         internal int RobotGeode;
 
-        internal DayState Clone()
+        internal void Buy(Price price)
         {
-            return new DayState
-            {
-                Ore = Ore,
-                Clay = Clay,
-                Geode = Geode,
-                Obsidian = Obsidian,
-                RobotClay = RobotClay,
-                RobotGeode = RobotGeode,
-                RobotObsidian = RobotObsidian,
-                RobotOre = RobotOre,
-            };
+            Clay = this.Clay - price.Clay;
+            Obsidian = this.Obsidian - price.Obsidian;
+            Ore = this.Ore - price.Ore;
+
+            RobotClay = this.RobotClay + (price.Item == ItemEnum.Clay ? 1 : 0);
+            RobotOre = this.RobotOre + (price.Item == ItemEnum.Ore ? 1 : 0);
+            RobotObsidian = this.RobotObsidian + (price.Item == ItemEnum.Obsidian ? 1 : 0);
+            RobotGeode = this.RobotGeode + (price.Item == ItemEnum.Geode ? 1 : 0);
+        }
+
+        internal bool CanBuy(Price price) => price.Ore <= this.Ore && price.Clay <= this.Clay && price.Obsidian <= this.Obsidian;
+
+        internal DayState Clone() => new DayState
+        {
+            Clay = Clay,
+            Obsidian = Obsidian,
+            Geode = Geode,
+            Ore = Ore,
+            RobotClay = RobotClay,
+            RobotGeode = RobotGeode,
+            RobotObsidian = RobotObsidian,
+            RobotOre = RobotOre,
+        };
+
+        internal void WorkRobots()
+        {
+            this.Clay += this.RobotClay;
+            this.Ore += this.RobotOre;
+            this.Obsidian += this.RobotObsidian;
+            this.Geode += this.RobotGeode;
         }
     }
 
@@ -169,9 +194,9 @@ namespace Pr15
 
     internal enum ItemEnum
     {
-        Ore, 
-        Clay,
-        Obsidian,
-        Geode
+        Ore = 1, 
+        Clay = 2,
+        Obsidian = 3,
+        Geode = 4
     }
 }
