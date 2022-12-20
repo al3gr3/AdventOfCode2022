@@ -50,18 +50,35 @@ namespace Pr15
                 };
             }).ToList();
 
+            //firstStar(blueprints);
+            secondStar(blueprints);
+        }
+
+        private static void secondStar(List<BluePrint> blueprints)
+        {
+            var result = 1;
+            blueprints.Take(3).ToList().ForEach(blueprint =>
+            {
+                letsgo(blueprint, 32);
+                result *= blueprint.Max;
+            });
+
+            Console.WriteLine(result);
+        }
+
+        private static void firstStar(List<BluePrint> blueprints)
+        {
             blueprints.ForEach(blueprint =>
             {
-                letsgo(blueprint);
+                letsgo(blueprint, 24);
             });
 
             var result = blueprints.Sum(x => x.Value);
             Console.WriteLine(result);
         }
 
-        private static void letsgo(BluePrint blueprint)
+        private static void letsgo(BluePrint blueprint, int maxDays)
         {
-            var maxDays = 24;
             var dayStates = Enumerable.Range(1, maxDays + 2).Select(x => new List<DayState>()).ToArray();
             dayStates[1].Add(new DayState
             {
