@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pr19", "Pr19\Pr19.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pr20", "Pr20\Pr20.csproj", "{F53CC8DC-A5E6-4D50-A873-5363DC65E42C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pr21", "Pr21\Pr21.csproj", "{4C4ED564-92BD-4781-BBAC-47206EF867A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{F53CC8DC-A5E6-4D50-A873-5363DC65E42C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F53CC8DC-A5E6-4D50-A873-5363DC65E42C}.TEST|Any CPU.ActiveCfg = TEST|Any CPU
 		{F53CC8DC-A5E6-4D50-A873-5363DC65E42C}.TEST|Any CPU.Build.0 = TEST|Any CPU
+		{4C4ED564-92BD-4781-BBAC-47206EF867A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4ED564-92BD-4781-BBAC-47206EF867A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4ED564-92BD-4781-BBAC-47206EF867A3}.TEST|Any CPU.ActiveCfg = TEST|Any CPU
+		{4C4ED564-92BD-4781-BBAC-47206EF867A3}.TEST|Any CPU.Build.0 = TEST|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
