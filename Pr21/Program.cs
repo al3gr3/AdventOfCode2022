@@ -7,8 +7,8 @@ namespace Pr15
 {
     class Program
     {
-
         static string[] lines;
+
         static void Main(string[] args)
         {
 #if TEST
