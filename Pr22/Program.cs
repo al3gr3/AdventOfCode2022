@@ -27,6 +27,25 @@ namespace Pr15
             for (var i = 0; i < lines.Length; i++)
                 lines[i] += string.Concat(Enumerable.Range(0, width - lines[i].Length).Select(r => ' '));
 
+            var facets = Enumerable.Range(1, 6).Select(x => new string[] { }).ToArray();
+            int size;
+#if TEST
+            size = 4;
+            facets[0] =                lines.Take(size).Select(x => string.Concat(x.Skip(size * 2).Take(size))).ToArray();
+            facets[1] =     lines.Skip(size).Take(size).Select(x => string.Concat(x.Skip(size * 2).Take(size))).ToArray();
+            facets[2] = lines.Skip(2 * size).Take(size).Select(x => string.Concat(x.Skip(size * 2).Take(size))).ToArray();
+
+            facets[3] = lines.Skip(2 * size).Take(size).Select(x => string.Concat(x.Skip(size * 3).Take(size))).ToArray();
+
+#else
+            size = 50;
+            facets[0] =                lines.Take(size).Select(x => string.Concat(x.Skip(size).Take(size))).ToArray(); 
+            facets[1] =     lines.Skip(size).Take(size).Select(x => string.Concat(x.Skip(size).Take(size))).ToArray();
+            facets[2] = lines.Skip(2 * size).Take(size).Select(x => string.Concat(x.Skip(size).Take(size))).ToArray();
+
+            facets[3] = lines.Take(size).Select(x => string.Concat(x.Skip(2 * size).Take(size))).ToArray();
+#endif
+
             var pos = new Position
             {
                 Direction = new Point
@@ -70,6 +89,31 @@ namespace Pr15
             var next = next1.Clone();
             next.Add(pos.Direction);
             
+            if (next.Y > height - 1)
+                next.Y = 0;
+            if (next.X > width - 1)
+                next.X = 0;
+
+            if (next.Y < 0)
+                next.Y = height - 1;
+            if (next.X < 0)
+                next.X = width - 1;
+
+            if (lines[next.Y][next.X] == ' ')
+                return Move(width, height, pos, next);
+            else if (lines[next.Y][next.X] == '.')
+                return next;
+            else if (lines[next.Y][next.X] == '#')
+                return null;
+
+            else throw new InvalidOperationException();
+        }
+
+        private static Point Move2(int width, int height, Position pos, Point next1)
+        {
+            var next = next1.Clone();
+            next.Add(pos.Direction);
+
             if (next.Y > height - 1)
                 next.Y = 0;
             if (next.X > width - 1)
