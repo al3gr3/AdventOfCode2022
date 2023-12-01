@@ -363,3 +363,18 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.txt
+/Pr1/TextFile1.txt
+/Pr10/TextFile1.txt
+/Pr12/TextFile1.txt
+/Pr12/TextFile2.txt
+/Pr13/TextFile1.txt
+/Pr2/TextFile1.txt
+/Pr3/TextFile1.txt
+/Pr4/TextFile1.txt
+/Pr5/TextFile1.txt
+/Pr6/TextFile1.txt
+/Pr7/TextFile1.txt
+/Pr8/TextFile1.txt
+/Pr9/TextFile1.txt
+/Pr9/TextFile2.txt
+/Pr9/TextFile3.txt
