@@ -16,6 +16,9 @@ namespace Pr15
             var lines = File.ReadAllLines("TextFile2.txt");
 #endif
             var result = lines.Select(x => Convert(x)).Sum();
+
+
+            var s = new LeetCode().GenerateParenthesis(3);
             Console.WriteLine(result);
             Console.WriteLine(Convert(result));
         }
@@ -65,5 +68,7 @@ namespace Pr15
                 throw new Exception();
             return result;
         }
+
+
     }
 }
